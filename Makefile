@@ -8,3 +8,8 @@ install:
 .PHONY: generate
 generate:
 	thriftrw --plugin=yarpc hello.thrift
+
+.PHONY: run
+run:
+	go build .
+	./hellodi
