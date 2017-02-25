@@ -2,3 +2,7 @@ package: github.com/breerly/hellodi
 import:
 - package: go.uber.org/fx
   version: v1.0.0-beta1
+- package: go.uber.org/thriftrw
+  version: ^1.0.0
+- package: go.uber.org/yarpc
+  version: ^1.4.0
