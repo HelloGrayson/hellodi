@@ -1,10 +1,53 @@
 hash: b131a770739cdf9ee19af2e05e2b993bfd6842ac5a2c677c6f1994aa01d9038c
-updated: 2017-02-24T16:29:39.708754279-08:00
+updated: 2017-02-24T16:41:01.77057049-08:00
 imports:
+- name: github.com/golang/mock
+  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
+  subpackages:
+  - gomock
+- name: github.com/opentracing/opentracing-go
+  version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
+  subpackages:
+  - ext
+  - log
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: go.uber.org/atomic
+  version: 0c9e689d64f004564b79d9a663634756df322902
 - name: go.uber.org/fx
   version: b897b6731d2d54e874e5089733f0e8c47d4013ed
+  subpackages:
+  - dig
 - name: go.uber.org/thriftrw
   version: c98a13058faa5dd41584a77221a268d2c72d832d
+  subpackages:
+  - envelope
+  - internal/envelope/exception
+  - internal/semver
+  - protocol
+  - protocol/binary
+  - version
+  - wire
 - name: go.uber.org/yarpc
   version: 47ebfe9337d943e637cc1748254727ec1fa89bf4
+  subpackages:
+  - api/encoding
+  - api/middleware
+  - api/transport
+  - encoding/thrift
+  - encoding/thrift/internal
+  - internal
+  - internal/clientconfig
+  - internal/encoding
+  - internal/errors
+  - internal/inboundmiddleware
+  - internal/introspection
+  - internal/outboundmiddleware
+  - internal/request
+  - internal/sync
+- name: golang.org/x/net
+  version: f4b625ec9b21d620bb5ce57f2dfc3e08ca97fce6
+  subpackages:
+  - context
+  - context/ctxhttp
 testImports: []
