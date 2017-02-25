@@ -14,3 +14,8 @@ generate:
 run:
 	go build .
 	./hellodi
+
+.PHONY: yab
+yab:
+	yab -p http://localhost:8086 --disable-thrift-envelope \
+		-t hello.thrift hello Hello::echo -r '{"echo": {"message": "yo", "count": 5}}'
