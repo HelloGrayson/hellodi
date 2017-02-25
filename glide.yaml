@@ -1,0 +1,4 @@
+package: github.com/breerly/hellodi
+import:
+- package: go.uber.org/fx
+  version: v1.0.0-beta1
