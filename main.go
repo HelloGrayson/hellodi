@@ -31,7 +31,9 @@ func main() {
 }
 
 func newProcs(helloHandler *helloHandler) *fx2.Procs {
-	return &fx2.Procs{Value: helloserver.New(helloHandler)}
+	return &fx2.Procs{
+		Value: helloserver.New(helloHandler),
+	}
 }
 
 func newHelloClient(d *yarpc.Dispatcher) helloclient.Interface {
