@@ -1,5 +1,5 @@
-hash: b131a770739cdf9ee19af2e05e2b993bfd6842ac5a2c677c6f1994aa01d9038c
-updated: 2017-02-24T16:41:01.77057049-08:00
+hash: 571e1ff3a411113bbfd9310a0b65ba144fc7afa930e368795e007f5ebd50826b
+updated: 2017-02-28T14:36:01.478299835-08:00
 imports:
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
@@ -12,6 +12,10 @@ imports:
   - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/uber/jaeger-client-go
+  version: a1c7be77e82c1ccd832ace5c4c04b25700d90b1f
+  subpackages:
+  - log/zap
 - name: go.uber.org/atomic
   version: 0c9e689d64f004564b79d9a663634756df322902
 - name: go.uber.org/fx
@@ -33,6 +37,7 @@ imports:
   subpackages:
   - api/encoding
   - api/middleware
+  - api/peer
   - api/transport
   - encoding/thrift
   - encoding/thrift/internal
@@ -42,9 +47,21 @@ imports:
   - internal/errors
   - internal/inboundmiddleware
   - internal/introspection
+  - internal/net
   - internal/outboundmiddleware
   - internal/request
   - internal/sync
+  - peer
+  - peer/hostport
+  - transport/http
+- name: go.uber.org/zap
+  version: a03b90bc236f3def382f17743518889a31f8187c
+  subpackages:
+  - buffer
+  - internal/bufferpool
+  - internal/exit
+  - internal/multierror
+  - zapcore
 - name: golang.org/x/net
   version: f4b625ec9b21d620bb5ce57f2dfc3e08ca97fce6
   subpackages:
