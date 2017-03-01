@@ -27,7 +27,7 @@ type Service struct {
 // Procedures is a wrapper for []transport.Procedure
 // since the container cant resolve lists
 type Procedures struct {
-	Procs []transport.Procedure
+	Register []transport.Procedure
 }
 
 // RegisterType adds a userland type to the container
@@ -51,7 +51,7 @@ func (s *Service) Start() {
 	s.container.ResolveAll(&procedures)
 	if procedures != nil {
 		logger.Info("Registering procedures.", zap.Any("procedures", procedures))
-		dispatcher.Register(procedures.Procs)
+		dispatcher.Register(procedures.Register)
 	} else {
 		logger.Fatal("found no procs, exiting.")
 	}
