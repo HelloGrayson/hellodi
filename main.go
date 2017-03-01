@@ -40,19 +40,21 @@ func newHelloClient(d *yarpc.Dispatcher) helloclient.Interface {
 	return helloclient.New(d.ClientConfig("hello"))
 }
 
-func newHelloHandler(logger *zap.Logger) *helloHandler {
-	return &helloHandler{logger: logger}
+func newHelloHandler(logger *zap.Logger, helloClient helloclient.Interface) *helloHandler {
+	return &helloHandler{logger: logger, helloClient: helloClient}
 }
 
 type helloHandler struct {
-	logger *zap.Logger
+	logger      *zap.Logger
+	helloClient helloclient.Interface
 }
 
-func (h *helloHandler) Echo(ctx context.Context, e *hello.EchoRequest) (*hello.EchoResponse, error) {
-	h.logger.Info("Echo", zap.Any("message", e.Message))
-	return &hello.EchoResponse{Message: e.Message, Count: e.Count + 1}, nil
+func (h *helloHandler) Echo(ctx context.Context, req *hello.EchoRequest) (*hello.EchoResponse, error) {
+	h.logger.Info("Echo", zap.Any("message", req.Message))
+	return &hello.EchoResponse{Message: req.Message, Count: req.Count + 1}, nil
 }
 
 func (h *helloHandler) CallHome(ctx context.Context, req *hello.CallHomeRequest) (*hello.CallHomeResponse, error) {
+	h.logger.Info("CallHome", zap.Any("echo", req.String()))
 	return &hello.CallHomeResponse{Echo: &hello.EchoResponse{Message: "called home!"}}, nil
 }
