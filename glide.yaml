@@ -5,6 +5,6 @@ import:
 - package: go.uber.org/thriftrw
   version: ^1.0.0
 - package: go.uber.org/yarpc
-  version: ^1.4.0
+  version: config-examples
 - package: go.uber.org/zap
   version: v1.0.0-rc.2

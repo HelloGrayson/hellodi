@@ -1,10 +1,12 @@
-hash: 571e1ff3a411113bbfd9310a0b65ba144fc7afa930e368795e007f5ebd50826b
-updated: 2017-02-28T14:36:01.478299835-08:00
+hash: cbefdf640e9ff8827abe9a80871ea13e19938ac6e8468ab7fabd3f6b7573282b
+updated: 2017-02-28T16:35:23.220326041-08:00
 imports:
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
   - gomock
+- name: github.com/mitchellh/mapstructure
+  version: db1efb556f84b25a0a13a04aad883943538ad2e0
 - name: github.com/opentracing/opentracing-go
   version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
   subpackages:
@@ -12,10 +14,16 @@ imports:
   - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
-- name: github.com/uber/jaeger-client-go
-  version: a1c7be77e82c1ccd832ace5c4c04b25700d90b1f
+- name: github.com/uber-go/atomic
+  version: e682c1008ac17bf26d2e4b5ad6cdd08520ed0b22
+- name: github.com/uber/tchannel-go
+  version: 79387824978f91318be3bfb43ae12e04c38cfe97
   subpackages:
-  - log/zap
+  - internal/argreader
+  - relay
+  - tnet
+  - trand
+  - typed
 - name: go.uber.org/atomic
   version: 0c9e689d64f004564b79d9a663634756df322902
 - name: go.uber.org/fx
@@ -33,7 +41,7 @@ imports:
   - version
   - wire
 - name: go.uber.org/yarpc
-  version: 47ebfe9337d943e637cc1748254727ec1fa89bf4
+  version: a9298777a868def6cc797494269e43f32d44f77c
   subpackages:
   - api/encoding
   - api/middleware
@@ -43,6 +51,7 @@ imports:
   - encoding/thrift/internal
   - internal
   - internal/clientconfig
+  - internal/decode
   - internal/encoding
   - internal/errors
   - internal/inboundmiddleware
@@ -54,6 +63,7 @@ imports:
   - peer
   - peer/hostport
   - transport/http
+  - x/config
 - name: go.uber.org/zap
   version: a03b90bc236f3def382f17743518889a31f8187c
   subpackages:
@@ -63,8 +73,10 @@ imports:
   - internal/multierror
   - zapcore
 - name: golang.org/x/net
-  version: f4b625ec9b21d620bb5ce57f2dfc3e08ca97fce6
+  version: 906cda9512f77671ab44f8c8563b13a8e707b230
   subpackages:
   - context
   - context/ctxhttp
+- name: gopkg.in/yaml.v2
+  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
 testImports: []

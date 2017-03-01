@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	service := fx2.New()
+	service := fx2.New("config.yaml")
 
 	service.RegisterType(newProcs)
 	service.RegisterType(newHelloClient)

@@ -2,21 +2,25 @@ package fx2
 
 import (
 	"log"
+	"os"
 
 	"go.uber.org/fx/dig"
 	"go.uber.org/yarpc"
 	"go.uber.org/yarpc/api/transport"
 	"go.uber.org/yarpc/transport/http"
+	"go.uber.org/yarpc/transport/tchannel"
+	"go.uber.org/yarpc/x/config"
 	"go.uber.org/zap"
 )
 
 // New creates an app framework service
-func New() *Service {
-	return &Service{container: dig.New()}
+func New(config string) *Service {
+	return &Service{config: config, container: dig.New()}
 }
 
 // Service is the service being bootstrapped
 type Service struct {
+	config    string
 	container dig.Graph
 }
 
@@ -33,11 +37,12 @@ func (s *Service) RegisterType(t interface{}) {
 
 // Start and starts the messaging framework
 func (s *Service) Start() {
+	dispatcher := newDispatcher(s.config)
+	s.container.Register(dispatcher)
+
 	// register framework types
 	logger := newLogger()
 	s.container.Register(logger)
-	dispatcher := newDispatcher()
-	s.container.Register(dispatcher)
 
 	// resolve and register procs
 	// note we have to use an internal type here,
@@ -68,18 +73,26 @@ func newLogger() *zap.Logger {
 	return logger
 }
 
-func newDispatcher() *yarpc.Dispatcher {
-	http := http.NewTransport()
-	dispatcher := yarpc.NewDispatcher(yarpc.Config{
-		Name: "hello",
-		Inbounds: yarpc.Inbounds{
-			http.NewInbound(":8086"),
-		},
-		Outbounds: yarpc.Outbounds{
-			"hello": {
-				Unary: http.NewSingleOutbound("http://127.0.0.1:8086"),
-			},
-		},
-	})
+func newDispatcher(yamlPath string) *yarpc.Dispatcher {
+	cfg := config.New()
+	if err := http.RegisterTransport(cfg); err != nil {
+		log.Fatal(err)
+	}
+	if err := tchannel.RegisterTransport(cfg); err != nil {
+		log.Fatal(err)
+	}
+	confFile, err := os.Open(yamlPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer confFile.Close()
+	builder, err := cfg.LoadYAML(confFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	dispatcher, err := builder.BuildDispatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return dispatcher
 }
