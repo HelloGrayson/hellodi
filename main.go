@@ -48,7 +48,11 @@ type helloHandler struct {
 	logger *zap.Logger
 }
 
-func (h helloHandler) Echo(ctx context.Context, e *hello.EchoRequest) (*hello.EchoResponse, error) {
+func (h *helloHandler) Echo(ctx context.Context, e *hello.EchoRequest) (*hello.EchoResponse, error) {
 	h.logger.Info("Echo", zap.Any("message", e.Message))
 	return &hello.EchoResponse{Message: e.Message, Count: e.Count + 1}, nil
+}
+
+func (h *helloHandler) CallHome(ctx context.Context, req *hello.CallHomeRequest) (*hello.CallHomeResponse, error) {
+	return &hello.CallHomeResponse{Echo: &hello.EchoResponse{Message: "called home!"}}, nil
 }

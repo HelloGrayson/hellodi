@@ -14,6 +14,12 @@ import (
 
 // Interface is a client for the Hello service.
 type Interface interface {
+	CallHome(
+		ctx context.Context,
+		CallHome *hello.CallHomeRequest,
+		opts ...yarpc.CallOption,
+	) (*hello.CallHomeResponse, error)
+
 	Echo(
 		ctx context.Context,
 		Echo *hello.EchoRequest,
@@ -41,6 +47,29 @@ func init() {
 
 type client struct {
 	c thrift.Client
+}
+
+func (c client) CallHome(
+	ctx context.Context,
+	_CallHome *hello.CallHomeRequest,
+	opts ...yarpc.CallOption,
+) (success *hello.CallHomeResponse, err error) {
+
+	args := hello.Hello_CallHome_Helper.Args(_CallHome)
+
+	var body wire.Value
+	body, err = c.c.Call(ctx, args, opts...)
+	if err != nil {
+		return
+	}
+
+	var result hello.Hello_CallHome_Result
+	if err = result.FromWire(body); err != nil {
+		return
+	}
+
+	success, err = hello.Hello_CallHome_Helper.UnwrapResponse(&result)
+	return
 }
 
 func (c client) Echo(

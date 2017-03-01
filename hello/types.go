@@ -10,6 +10,122 @@ import (
 	"strings"
 )
 
+type CallHomeRequest struct {
+	Echo *EchoRequest `json:"echo"`
+}
+
+func (v *CallHomeRequest) ToWire() (wire.Value, error) {
+	var (
+		fields [1]wire.Field
+		i      int = 0
+		w      wire.Value
+		err    error
+	)
+	if v.Echo == nil {
+		return w, errors.New("field Echo of CallHomeRequest is required")
+	}
+	w, err = v.Echo.ToWire()
+	if err != nil {
+		return w, err
+	}
+	fields[i] = wire.Field{ID: 1, Value: w}
+	i++
+	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
+}
+
+func _EchoRequest_Read(w wire.Value) (*EchoRequest, error) {
+	var v EchoRequest
+	err := v.FromWire(w)
+	return &v, err
+}
+
+func (v *CallHomeRequest) FromWire(w wire.Value) error {
+	var err error
+	echoIsSet := false
+	for _, field := range w.GetStruct().Fields {
+		switch field.ID {
+		case 1:
+			if field.Value.Type() == wire.TStruct {
+				v.Echo, err = _EchoRequest_Read(field.Value)
+				if err != nil {
+					return err
+				}
+				echoIsSet = true
+			}
+		}
+	}
+	if !echoIsSet {
+		return errors.New("field Echo of CallHomeRequest is required")
+	}
+	return nil
+}
+
+func (v *CallHomeRequest) String() string {
+	var fields [1]string
+	i := 0
+	fields[i] = fmt.Sprintf("Echo: %v", v.Echo)
+	i++
+	return fmt.Sprintf("CallHomeRequest{%v}", strings.Join(fields[:i], ", "))
+}
+
+type CallHomeResponse struct {
+	Echo *EchoResponse `json:"echo"`
+}
+
+func (v *CallHomeResponse) ToWire() (wire.Value, error) {
+	var (
+		fields [1]wire.Field
+		i      int = 0
+		w      wire.Value
+		err    error
+	)
+	if v.Echo == nil {
+		return w, errors.New("field Echo of CallHomeResponse is required")
+	}
+	w, err = v.Echo.ToWire()
+	if err != nil {
+		return w, err
+	}
+	fields[i] = wire.Field{ID: 1, Value: w}
+	i++
+	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
+}
+
+func _EchoResponse_Read(w wire.Value) (*EchoResponse, error) {
+	var v EchoResponse
+	err := v.FromWire(w)
+	return &v, err
+}
+
+func (v *CallHomeResponse) FromWire(w wire.Value) error {
+	var err error
+	echoIsSet := false
+	for _, field := range w.GetStruct().Fields {
+		switch field.ID {
+		case 1:
+			if field.Value.Type() == wire.TStruct {
+				v.Echo, err = _EchoResponse_Read(field.Value)
+				if err != nil {
+					return err
+				}
+				echoIsSet = true
+			}
+		}
+	}
+	if !echoIsSet {
+		return errors.New("field Echo of CallHomeResponse is required")
+	}
+	return nil
+}
+
+func (v *CallHomeResponse) String() string {
+	var fields [1]string
+	i := 0
+	fields[i] = fmt.Sprintf("Echo: %v", v.Echo)
+	i++
+	return fmt.Sprintf("CallHomeResponse{%v}", strings.Join(fields[:i], ", "))
+}
+
 type EchoRequest struct {
 	Message string `json:"message"`
 	Count   int16  `json:"count"`

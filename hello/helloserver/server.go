@@ -13,6 +13,11 @@ import (
 
 // Interface is the server-side interface for the Hello service.
 type Interface interface {
+	CallHome(
+		ctx context.Context,
+		CallHome *hello.CallHomeRequest,
+	) (*hello.CallHomeResponse, error)
+
 	Echo(
 		ctx context.Context,
 		Echo *hello.EchoRequest,
@@ -31,6 +36,16 @@ func New(impl Interface, opts ...thrift.RegisterOption) []transport.Procedure {
 		Methods: []thrift.Method{
 
 			thrift.Method{
+				Name: "callHome",
+				HandlerSpec: thrift.HandlerSpec{
+
+					Type:  transport.Unary,
+					Unary: thrift.UnaryHandler(h.CallHome),
+				},
+				Signature: "CallHome(CallHome *hello.CallHomeRequest) (*hello.CallHomeResponse)",
+			},
+
+			thrift.Method{
 				Name: "echo",
 				HandlerSpec: thrift.HandlerSpec{
 
@@ -42,12 +57,31 @@ func New(impl Interface, opts ...thrift.RegisterOption) []transport.Procedure {
 		},
 	}
 
-	procedures := make([]transport.Procedure, 0, 1)
+	procedures := make([]transport.Procedure, 0, 2)
 	procedures = append(procedures, thrift.BuildProcedures(service, opts...)...)
 	return procedures
 }
 
 type handler struct{ impl Interface }
+
+func (h handler) CallHome(ctx context.Context, body wire.Value) (thrift.Response, error) {
+	var args hello.Hello_CallHome_Args
+	if err := args.FromWire(body); err != nil {
+		return thrift.Response{}, err
+	}
+
+	success, err := h.impl.CallHome(ctx, args.CallHome)
+
+	hadError := err != nil
+	result, err := hello.Hello_CallHome_Helper.WrapResponse(success, err)
+
+	var response thrift.Response
+	if err == nil {
+		response.IsApplicationError = hadError
+		response.Body = result
+	}
+	return response, err
+}
 
 func (h handler) Echo(ctx context.Context, body wire.Value) (thrift.Response, error) {
 	var args hello.Hello_Echo_Args

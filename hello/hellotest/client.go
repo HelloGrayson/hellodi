@@ -42,6 +42,39 @@ func (m *MockClient) EXPECT() *_MockClientRecorder {
 	return m.recorder
 }
 
+// CallHome responds to a CallHome call based on the mock expectations. This
+// call will fail if the mock does not expect this call. Use EXPECT to expect
+// a call to this function.
+//
+// 	client.EXPECT().CallHome(gomock.Any(), ...).Return(...)
+// 	... := client.CallHome(...)
+func (m *MockClient) CallHome(
+	ctx context.Context,
+	_CallHome *hello.CallHomeRequest,
+	opts ...yarpc.CallOption,
+) (success *hello.CallHomeResponse, err error) {
+
+	args := []interface{}{ctx, _CallHome}
+	for _, o := range opts {
+		args = append(args, o)
+	}
+	i := 0
+	ret := m.ctrl.Call(m, "CallHome", args...)
+	success, _ = ret[i].(*hello.CallHomeResponse)
+	i++
+	err, _ = ret[i].(error)
+	return
+}
+
+func (mr *_MockClientRecorder) CallHome(
+	ctx interface{},
+	_CallHome interface{},
+	opts ...interface{},
+) *gomock.Call {
+	args := append([]interface{}{ctx, _CallHome}, opts...)
+	return mr.mock.ctrl.RecordCall(mr.mock, "CallHome", args...)
+}
+
 // Echo responds to a Echo call based on the mock expectations. This
 // call will fail if the mock does not expect this call. Use EXPECT to expect
 // a call to this function.

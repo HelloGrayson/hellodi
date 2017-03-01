@@ -18,4 +18,5 @@ run:
 .PHONY: yab
 yab:
 	yab -p http://localhost:8086 --disable-thrift-envelope \
-		-t hello.thrift hello Hello::echo -r '{"echo": {"message": "yo", "count": 5}}'
+		-t hello.thrift hello Hello::callHome \
+		-r '{"callHome": {"echo": {"message": "yo", "count": 5}}}'

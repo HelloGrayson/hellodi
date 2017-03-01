@@ -32,12 +32,6 @@ func (v *Hello_Echo_Args) ToWire() (wire.Value, error) {
 	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
 }
 
-func _EchoRequest_Read(w wire.Value) (*EchoRequest, error) {
-	var v EchoRequest
-	err := v.FromWire(w)
-	return &v, err
-}
-
 func (v *Hello_Echo_Args) FromWire(w wire.Value) error {
 	var err error
 	for _, field := range w.GetStruct().Fields {
@@ -128,12 +122,6 @@ func (v *Hello_Echo_Result) ToWire() (wire.Value, error) {
 		return wire.Value{}, fmt.Errorf("Hello_Echo_Result should have exactly one field: got %v fields", i)
 	}
 	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
-}
-
-func _EchoResponse_Read(w wire.Value) (*EchoResponse, error) {
-	var v EchoResponse
-	err := v.FromWire(w)
-	return &v, err
 }
 
 func (v *Hello_Echo_Result) FromWire(w wire.Value) error {
