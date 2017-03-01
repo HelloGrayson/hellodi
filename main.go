@@ -56,5 +56,11 @@ func (h *helloHandler) Echo(ctx context.Context, req *hello.EchoRequest) (*hello
 
 func (h *helloHandler) CallHome(ctx context.Context, req *hello.CallHomeRequest) (*hello.CallHomeResponse, error) {
 	h.logger.Info("CallHome", zap.Any("echo", req.String()))
-	return &hello.CallHomeResponse{Echo: &hello.EchoResponse{Message: "called home!"}}, nil
+
+	resp, err := h.helloClient.Echo(ctx, req.Echo)
+	if err != nil {
+		h.logger.Fatal("Failed to call home", zap.Any("request", req.Echo))
+	}
+
+	return &hello.CallHomeResponse{Echo: resp}, nil
 }
