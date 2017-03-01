@@ -38,13 +38,17 @@ func (s *Service) Provide(t interface{}) {
 	s.container.Register(t)
 }
 
-// Start and starts the messaging framework
+// Start registers framework types, resolves
+// the Procedures type from the container, registering
+// it's contents with a YARPC dispatcher, and then
+// starts the dispatcher
 func (s *Service) Start() {
 	confData := parseConfData(s.config)
 
-	// delegate config keys to all participating components
-	//for module, moduleConfig := range {
-	// get configurator for $module
+	// // delegate config keys to all participating components,
+	// // allowing them to make their deps available on the container
+	// for module, moduleConfig := range {
+	//     module.Configure(container, moduleConfig)
 	// }
 
 	dispatcher := newDispatcher(confData["yarpc"])
@@ -55,8 +59,6 @@ func (s *Service) Start() {
 	s.container.Register(logger)
 
 	// resolve and register procs
-	// note we have to use an internal type here,
-	// which we wouldnt have to if there was named deps support
 	var procedures *Procedures
 	s.container.ResolveAll(&procedures)
 	if procedures != nil {
@@ -78,6 +80,9 @@ func (s *Service) Stop() {
 	d.Stop()
 }
 
+// parseConfData takes a path to a yaml and returns
+// a map[string]interface{}, where the value is delegated
+// to a participating configurator
 func parseConfData(confPath string) map[string]interface{} {
 	confFile, err := os.Open(confPath)
 	if err != nil {
@@ -98,12 +103,17 @@ func parseConfData(confPath string) map[string]interface{} {
 	return data
 }
 
+// newLogger configures a zap.Logger,
+// once configurators are in place, this can and should
+// be delegated to the logger component
 func newLogger() *zap.Logger {
 	logger, _ := zap.NewProduction()
 	return logger
 }
 
-func newDispatcher(data interface{}) *yarpc.Dispatcher {
+// newDispatcher takes the yarpc: key confData and
+// configures a yarpc.Dispatcher
+func newDispatcher(confData interface{}) *yarpc.Dispatcher {
 	cfg := config.New()
 	if err := http.RegisterTransport(cfg); err != nil {
 		log.Fatal(err)
@@ -112,9 +122,7 @@ func newDispatcher(data interface{}) *yarpc.Dispatcher {
 		log.Fatal(err)
 	}
 
-	// yarpc:
-
-	builder, err := cfg.Load(data)
+	builder, err := cfg.Load(confData)
 	if err != nil {
 		log.Fatal(err)
 	}
