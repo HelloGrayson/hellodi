@@ -1,8 +1,11 @@
 package appinit
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
+
+	yaml "gopkg.in/yaml.v2"
 
 	"go.uber.org/fx/dig"
 	"go.uber.org/yarpc"
@@ -37,7 +40,14 @@ func (s *Service) Provide(t interface{}) {
 
 // Start and starts the messaging framework
 func (s *Service) Start() {
-	dispatcher := newDispatcher(s.config)
+	confData := parseConfData(s.config)
+
+	// delegate config keys to all participating components
+	//for module, moduleConfig := range {
+	// get configurator for $module
+	// }
+
+	dispatcher := newDispatcher(confData["yarpc"])
 	s.container.Register(dispatcher)
 
 	// register framework types
@@ -68,12 +78,32 @@ func (s *Service) Stop() {
 	d.Stop()
 }
 
+func parseConfData(confPath string) map[string]interface{} {
+	confFile, err := os.Open(confPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer confFile.Close()
+
+	confData, err := ioutil.ReadAll(confFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var data map[string]interface{}
+	if err := yaml.Unmarshal(confData, &data); err != nil {
+		log.Fatal(err)
+	}
+
+	return data
+}
+
 func newLogger() *zap.Logger {
 	logger, _ := zap.NewProduction()
 	return logger
 }
 
-func newDispatcher(yamlPath string) *yarpc.Dispatcher {
+func newDispatcher(data interface{}) *yarpc.Dispatcher {
 	cfg := config.New()
 	if err := http.RegisterTransport(cfg); err != nil {
 		log.Fatal(err)
@@ -81,15 +111,14 @@ func newDispatcher(yamlPath string) *yarpc.Dispatcher {
 	if err := tchannel.RegisterTransport(cfg); err != nil {
 		log.Fatal(err)
 	}
-	confFile, err := os.Open(yamlPath)
+
+	// yarpc:
+
+	builder, err := cfg.Load(data)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer confFile.Close()
-	builder, err := cfg.LoadYAML(confFile)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	dispatcher, err := builder.BuildDispatcher()
 	if err != nil {
 		log.Fatal(err)

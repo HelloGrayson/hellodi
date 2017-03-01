@@ -1,9 +1,10 @@
-name: hello
-inbounds:
-  http:
-    address: ":8086"
-outbounds:
-  hello:
+yarpc:
+  name: hello
+  inbounds:
     http:
-      host: localhost
-      port: 8086
+      address: ":8086"
+  outbounds:
+    hello:
+      http:
+        host: localhost
+        port: 8086
