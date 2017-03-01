@@ -18,9 +18,9 @@ import (
 func main() {
 	service := appinit.New("config.yaml")
 
-	service.RegisterType(newProcedures)
-	service.RegisterType(newHelloClient)
-	service.RegisterType(newHelloHandler)
+	service.Provide(newProcedures)
+	service.Provide(newHelloClient)
+	service.Provide(newHelloHandler)
 
 	service.Start()
 	defer service.Stop()

@@ -30,8 +30,8 @@ type Procedures struct {
 	Register []transport.Procedure
 }
 
-// RegisterType adds a userland type to the container
-func (s *Service) RegisterType(t interface{}) {
+// Provide adds a userland type to the container
+func (s *Service) Provide(t interface{}) {
 	s.container.Register(t)
 }
 
