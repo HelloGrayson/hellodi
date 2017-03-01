@@ -18,7 +18,7 @@ import (
 func main() {
 	service := appinit.New("config.yaml")
 
-	service.RegisterType(newProcs)
+	service.RegisterType(newProcedures)
 	service.RegisterType(newHelloClient)
 	service.RegisterType(newHelloHandler)
 
@@ -30,9 +30,9 @@ func main() {
 	<-signals
 }
 
-func newProcs(helloHandler *helloHandler) *appinit.Procs {
-	return &appinit.Procs{
-		Value: helloserver.New(helloHandler),
+func newProcedures(helloHandler *helloHandler) *appinit.Procedures {
+	return &appinit.Procedures{
+		helloserver.New(helloHandler),
 	}
 }
 

@@ -24,10 +24,10 @@ type Service struct {
 	container dig.Graph
 }
 
-// Procs is a wrapper for []transport.Procedure
+// Procedures is a wrapper for []transport.Procedure
 // since the container cant resolve lists
-type Procs struct {
-	Value []transport.Procedure
+type Procedures struct {
+	Procs []transport.Procedure
 }
 
 // RegisterType adds a userland type to the container
@@ -47,11 +47,11 @@ func (s *Service) Start() {
 	// resolve and register procs
 	// note we have to use an internal type here,
 	// which we wouldnt have to if there was named deps support
-	var procs *Procs
-	s.container.ResolveAll(&procs)
-	if procs != nil {
-		logger.Info("Found procs, registering.", zap.Any("procs", procs))
-		dispatcher.Register(procs.Value)
+	var procedures *Procedures
+	s.container.ResolveAll(&procedures)
+	if procedures != nil {
+		logger.Info("Registering procedures.", zap.Any("procedures", procedures))
+		dispatcher.Register(procedures.Procs)
 	} else {
 		logger.Fatal("found no procs, exiting.")
 	}

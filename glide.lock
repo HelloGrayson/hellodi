@@ -1,5 +1,5 @@
-hash: cbefdf640e9ff8827abe9a80871ea13e19938ac6e8468ab7fabd3f6b7573282b
-updated: 2017-02-28T16:35:23.220326041-08:00
+hash: 7217b7292431322f3a5cf16a8156ddcd0ac6565f460267701a2c777da9c3b2f8
+updated: 2017-02-28T21:48:59.465833604-08:00
 imports:
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
@@ -63,6 +63,8 @@ imports:
   - peer
   - peer/hostport
   - transport/http
+  - transport/tchannel
+  - transport/tchannel/internal
   - x/config
 - name: go.uber.org/zap
   version: a03b90bc236f3def382f17743518889a31f8187c
@@ -73,10 +75,14 @@ imports:
   - internal/multierror
   - zapcore
 - name: golang.org/x/net
-  version: 906cda9512f77671ab44f8c8563b13a8e707b230
+  version: 10c134ea0df15f7e34d789338c7a2d76cc7a3ab9
   subpackages:
   - context
   - context/ctxhttp
+- name: golang.org/x/tools
+  version: 496819729719f9d07692195e0a94d6edd2251389
+  subpackages:
+  - go/ast/astutil
 - name: gopkg.in/yaml.v2
   version: a3f3340b5840cee44f372bddb5880fcbc419b46a
 testImports: []

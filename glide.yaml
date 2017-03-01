@@ -8,3 +8,6 @@ import:
   version: config-examples
 - package: go.uber.org/zap
   version: v1.0.0-rc.2
+- package: golang.org/x/tools
+  subpackages:
+  - go/ast/astutil
