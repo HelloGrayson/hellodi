@@ -9,14 +9,14 @@ import (
 	"go.uber.org/yarpc"
 	"go.uber.org/zap"
 
-	"github.com/breerly/hellodi/fx2"
+	"github.com/breerly/hellodi/appinit"
 	"github.com/breerly/hellodi/hello"
 	"github.com/breerly/hellodi/hello/helloclient"
 	"github.com/breerly/hellodi/hello/helloserver"
 )
 
 func main() {
-	service := fx2.New("config.yaml")
+	service := appinit.New("config.yaml")
 
 	service.RegisterType(newProcs)
 	service.RegisterType(newHelloClient)
@@ -30,8 +30,8 @@ func main() {
 	<-signals
 }
 
-func newProcs(helloHandler *helloHandler) *fx2.Procs {
-	return &fx2.Procs{
+func newProcs(helloHandler *helloHandler) *appinit.Procs {
+	return &appinit.Procs{
 		Value: helloserver.New(helloHandler),
 	}
 }

@@ -1,4 +1,4 @@
-package fx2
+package appinit
 
 import (
 	"log"
