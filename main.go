@@ -32,7 +32,7 @@ func main() {
 
 func newProcedures(helloHandler *helloHandler) *appinit.Procedures {
 	return &appinit.Procedures{
-		helloserver.New(helloHandler),
+		Register: helloserver.New(helloHandler),
 	}
 }
 
