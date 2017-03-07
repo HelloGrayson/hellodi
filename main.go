@@ -10,7 +10,6 @@ import (
 	"go.uber.org/yarpc/transport/http"
 	"go.uber.org/zap"
 
-	"github.com/breerly/hellodi/appinit"
 	"github.com/breerly/hellodi/hello"
 	"github.com/breerly/hellodi/hello/helloclient"
 	"github.com/breerly/hellodi/hello/helloserver"
@@ -50,12 +49,6 @@ func newDispatcher() *yarpc.Dispatcher {
 		},
 	})
 	return dispatcher
-}
-
-func newProcedures(helloHandler *helloHandler) *appinit.Procedures {
-	return &appinit.Procedures{
-		Register: helloserver.New(helloHandler),
-	}
 }
 
 func newHelloClient(d *yarpc.Dispatcher) helloclient.Interface {
