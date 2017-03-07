@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,9 +19,15 @@ import (
 func main() {
 	service := appinit.New("config.yaml")
 
-	service.Provide(newProcedures)
-	service.Provide(newHelloClient)
-	service.Provide(newHelloHandler)
+	logger := service.ResolveLogger()
+	fmt.Println(logger)
+	dispatcher := service.ResolveDispatcher()
+	client := newHelloClient(dispatcher)
+	handler := newHelloHandler(logger, client)
+
+	service.Provide(&appinit.Procedures{
+		Register: helloserver.New(handler),
+	})
 
 	service.Start()
 	defer service.Stop()

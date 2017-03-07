@@ -18,7 +18,23 @@ import (
 
 // New creates an app framework service
 func New(config string) *Service {
-	return &Service{config: config, container: dig.New()}
+
+	container := dig.New()
+
+	confData := parseConfData(config)
+	// // delegate config keys to all participating components,
+	// // allowing them to make their deps available on the container
+	// for module, moduleConfig := range {
+	//     module.Configure(container, moduleConfig)
+	// }
+	dispatcher := newDispatcher(confData["yarpc"])
+	container.Register(dispatcher)
+
+	// register framework types
+	logger := newLogger()
+	container.Register(logger)
+
+	return &Service{config: config, container: container}
 }
 
 // Service is the service being bootstrapped
@@ -43,20 +59,8 @@ func (s *Service) Provide(t interface{}) {
 // it's contents with a YARPC dispatcher, and then
 // starts the dispatcher
 func (s *Service) Start() {
-	confData := parseConfData(s.config)
-
-	// // delegate config keys to all participating components,
-	// // allowing them to make their deps available on the container
-	// for module, moduleConfig := range {
-	//     module.Configure(container, moduleConfig)
-	// }
-
-	dispatcher := newDispatcher(confData["yarpc"])
-	s.container.Register(dispatcher)
-
-	// register framework types
-	logger := newLogger()
-	s.container.Register(logger)
+	logger := s.ResolveLogger()
+	dispatcher := s.ResolveDispatcher()
 
 	// resolve and register procs
 	var procedures *Procedures
@@ -78,6 +82,20 @@ func (s *Service) Stop() {
 	var d *yarpc.Dispatcher
 	s.container.ResolveAll(&d)
 	d.Stop()
+}
+
+// ResolveLogger returns a configured zap.Logger
+func (s *Service) ResolveLogger() *zap.Logger {
+	var logger *zap.Logger
+	s.container.ResolveAll(&logger)
+	return logger
+}
+
+// ResolveDispatcher returns a configured dispatcher
+func (s *Service) ResolveDispatcher() *yarpc.Dispatcher {
+	var dispatcher *yarpc.Dispatcher
+	s.container.ResolveAll(&dispatcher)
+	return dispatcher
 }
 
 // parseConfData takes a path to a yaml and returns
@@ -107,7 +125,7 @@ func parseConfData(confPath string) map[string]interface{} {
 // once configurators are in place, this can and should
 // be delegated to the logger component
 func newLogger() *zap.Logger {
-	logger, _ := zap.NewProduction()
+	logger, _ := zap.NewDevelopment()
 	return logger
 }
 
