@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"go.uber.org/yarpc"
+	"go.uber.org/yarpc/transport/http"
 	"go.uber.org/zap"
 
 	"github.com/breerly/hellodi/appinit"
@@ -16,18 +17,39 @@ import (
 )
 
 func main() {
-	service := appinit.New("config.yaml")
+	logger, _ := zap.NewDevelopment()
 
-	service.Provide(newProcedures)
-	service.Provide(newHelloClient)
-	service.Provide(newHelloHandler)
+	dispatcher := newDispatcher()
 
-	service.Start()
-	defer service.Stop()
+	client := newHelloClient(dispatcher)
+	handler := newHelloHandler(logger, client)
+
+	dispatcher.Register(helloserver.New(handler))
+
+	if err := dispatcher.Start(); err != nil {
+		logger.Fatal("Unable to start service", zap.Any("err", err))
+	}
+	defer dispatcher.Stop()
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	<-signals
+}
+
+func newDispatcher() *yarpc.Dispatcher {
+	http := http.NewTransport()
+	dispatcher := yarpc.NewDispatcher(yarpc.Config{
+		Name: "hello",
+		Inbounds: yarpc.Inbounds{
+			http.NewInbound(":8086"),
+		},
+		Outbounds: yarpc.Outbounds{
+			"hello": {
+				Unary: http.NewSingleOutbound("http://127.0.0.1:8086"),
+			},
+		},
+	})
+	return dispatcher
 }
 
 func newProcedures(helloHandler *helloHandler) *appinit.Procedures {
